@@ -1,0 +1,214 @@
+---
+title: "Actividad 2 - Modelos de Probabilidad"
+author: "José Luis Risco Velasco"
+date: "2023-05-22"
+output: html_document
+---
+
+Ejercicio académico de simulación de tiempos de fallo.
+
+# Paso 1: Generar números aleatorios para cada distribución de elementos.
+
+Se generan muchos números aleatorios para cada elemento/componente del sistema de propulsión siguiendo su correspondiente distribución y se selecciona el mínimo. Este indicará el mínimo tiempo que esa pieza es capaz de funcionar antes de que se estropee.
+
+El objetivo, no será tanto ver la fiabilidad de cada elemento, sino identificar la línea de transmisión (conjunto de elementos) más fiable. 
+
+## Elemento 1 
+
+El elemento 1 sigue una distribución uniforme, se generan números aleatorios con la función runif() y se imprime el más pequeño con la función print(min()) .
+
+```{r}
+a <- 3.7
+b <- 6
+
+# Generar números aleatorios con distribución uniforme
+num_aleatorios <- runif(1000, min = a, max = b)
+
+# Imprimir el mínimo
+print(min(num_aleatorios, 10))
+
+#Resultado: 3.702352
+
+```
+
+## Elemento 2
+
+El elemento 2 sigue una distribución uniforme, se generan números aleatorios con la función runif() y se imprime el más pequeño con la función print(min()) .
+
+```{r}
+a <- 2.9
+b <- 5.7
+
+# Generar números aleatorios con distribución uniforme
+num_aleatorios <- runif(1000, min = a, max = b)
+
+# Imprimir el mínimo
+print(min(num_aleatorios, 10))
+
+#Resultado: 2.902118
+```
+
+## Elementos 3, 4 y 14
+
+Los elementos 3,4 y 14 comparten los mismos parámetros siguiendo una distribución Gamma, se generan números aleatorios con la función rgamma() y se imprime el más pequeño con la función print(min()).
+
+```{r}
+alfa <- 8
+beta <- 3
+
+# Generar números aleatorios con distribución gamma
+num_aleatorios <- rgamma(1000, shape = alfa, rate = beta)
+
+# Imprimir el mínimo
+print(min(num_aleatorios, 10))
+
+#Resultado: 0.6293259
+```
+
+## Elementos 5 y 6
+
+Los elementos 5 y 6 comparten los mismos parámetros siguiendo una distribución Log Normal, se generan números aleatorios con la función rlnorm() y se imprime el más pequeño con la función print(min()).
+
+
+```{r}
+mu <- 2
+sigma <- 1.2
+
+# Generar números aleatorios con distribución lognormal
+num_aleatorios <- rlnorm(1000, meanlog = mu, sdlog = sigma)
+
+# Imprimir el mínimo
+print(max(num_aleatorios, 10))
+
+#Resultado: 231.4047
+
+```
+
+## Elementos 7 y 8
+
+Los elementos 5 y 6 comparten los mismos parámetros siguiendo una distribución Log Normal, se generan números aleatorios con la función rlnorm() y se imprime el más pequeño con la función print(min()).
+
+```{r}
+mu <- 1
+sigma <- 1.1
+
+# Generar números aleatorios con distribución lognormal
+num_aleatorios <- rlnorm(1000, meanlog = mu, sdlog = sigma)
+
+# Imprimir el mínimo
+print(max(num_aleatorios, 10))
+
+#Resultado:58.90703
+```
+
+## Elementos 9 y 12
+
+Los elementos 9 y 12 comparten los mismos parámetros siguiendo una distribución Gamma, se generan números aleatorios con la función rgamma() y se imprime el más pequeño con la función print(min()).
+
+```{r}
+alfa <- 2
+beta <- 2
+
+# Generar números aleatorios con distribución gamma
+num_aleatorios <- rgamma(1000, shape = alfa, rate = beta)
+
+# Imprimir el mínimo
+print(min(num_aleatorios, 10))
+
+#Resultado: 0.01734313
+```
+
+## Elemento 10
+
+El elemento 10 sigue una distribución Gamma, se generan números aleatorios con la función rgamma() y se imprime el más pequeño con la función print(min()) .
+
+```{r}
+alfa <- 3
+beta <- 2.2
+
+# Generar números aleatorios con distribución gamma
+num_aleatorios <- rgamma(1000, shape = alfa, rate = beta)
+
+# Imprimir el mínimo
+print(min(num_aleatorios, 10))
+
+#Resultado:0.06952134
+```
+
+## Elemento 11
+
+El elemento 10 es el único que sigue una distribución Beta, se generan números aleatorios con la función rbeta() junto a una transformación lineal para ajustar el intervalo y se imprime el más pequeño con la función print(min()) .
+
+```{r}
+alpha <- 5
+beta <- 1
+a <- 2
+b <- 12
+
+# Generar números aleatorios con distribución Beta
+num_aleatorios <- (rbeta(1000, shape1 = alpha, shape2 = beta) * (b - a)) + a
+
+# Imprimir el mínimo
+print(min(num_aleatorios, 10))
+
+#Resultado: 2.82824
+```
+
+## Elemento 13
+
+El elemento 10 sigue una distribución Log Normal, se generan números aleatorios con la función rlnorm() y se imprime el más pequeño con la función print(min()) .
+
+
+```{r}
+mu <- 1.2
+sigma <- 1.1
+
+# Generar números aleatorios con distribución lognormal
+num_aleatorios <- rlnorm(1000, meanlog = mu, sdlog = sigma)
+
+# Imprimir el mínimo
+print(min(num_aleatorios, 10))
+
+#Resultado: 0.03618286
+```
+
+# Paso 2: Establecer las distintar líneas de transmisión
+
+El segundo paso consta de establecer las distintas líneas de transmisión de combinaciones posibles para propulsar el buque. 
+
+Añadir que para cada línea de transmisión se establecen tramos en el esquema del sistema de propulsión de la actividad a partir de letras. Un ejemplo es la letra a que está compuesta por los elementos 1 y 3. 
+
+Por lo tanto, he determinado las siguientes líneas de transmisión:
+
+Línea 1: a-b-h-j-p
+
+Línea 2: a-b-f-g-i-k-p
+
+Línea 3: e-f-h-j-p
+
+Línea 4: e-g-i-k-p
+
+Línea 5: c-d-i-k-p
+
+Línea 6: c-d-g-f-h-j
+
+# Paso 3: Determinar el tiempo que tardaría en fallar cada línea e indicar la más fiable.
+
+Para de determinar el tiempo que tardaría en fallar cada línea, es suficiente con escoger el valor mínimo de tiempo de cada línea de transmisión, basándonos en el elemento con menor valor en esta.
+
+Aproximándo los valores a las milésimas, nos dan los siguientes resultados: 
+
+Línea 1: 0.017 (Elemento 9)
+
+Línea 2: 0.017 (Elemento 9)
+
+Línea 3: 0.017 (Elemento 12)
+
+Línea 4: 0.017 (Elemento 12)
+
+Línea 5: 0.063 (Elemento 4)
+
+Línea 6: 0.017 (Elemento 9)
+
+Finalmente, se puede apreciar que la que tardaría más en estropearse y, por tanto, la más fiable, es la línea 5.
+

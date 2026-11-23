@@ -1,0 +1,175 @@
+---
+title: "Actividad 2: Aplicación técnica de reducción de variables"
+author: "Jose Luis Risco Velasco"
+date: "2023-05-11"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    collapsed: true
+    smooth_scroll: true
+    theme: journal
+    highlight: kate
+    df_print: paged
+    code_folding: show
+---
+
+
+
+# Carga de los datos
+
+```{r}
+
+vinos <- read.csv2("data/vinos.csv")
+head(vinos)
+```
+
+# Análisis de factores
+
+```{r}
+library(psych)
+cortest.bartlett(vinos[,2:8]) 
+```
+# Matriz de correlaciones 
+
+```{r}
+r <- cor(vinos[,2:8], use = "pairwise.complete.obs" )
+```
+
+# Gráfico de correlaciones
+
+```{r}
+library(corrplot)
+corrplot::corrplot.mixed(r, order = "hclust", tl.col='black', tl.cex=1)
+```
+
+# Midiendo la adecuación de la muestra
+
+```{r}
+KMO(vinos[,2:8])
+```
+
+# Elijo el método del factor principal
+
+```{r}
+fit.pa <- fa(vinos[,2:8],
+             nfactors = 4,
+             min.err = 0.001,  
+             max.iter = 50,
+             fm = "pa",
+             rotate = "none")
+print(fit.pa, digits = 4)
+
+```
+
+```{r}
+a <- fit.pa$loadings[]
+print(a)
+
+r2 <- a%*%t(a)
+r2
+
+auto_v <- eigen(r2)
+auto_v$values
+```
+# Gráficos de autovalores
+
+```{r}
+plot(1:7, auto_v$values, type = 'b')
+
+abline(h=1)
+```
+
+```{r}
+scree(r,pc=FALSE)
+```
+
+```{r}
+fa.parallel(vinos[,2:8],fa="fa",fm="pa")
+```
+
+## Tras esto último, se puede apreciar que el ajuste mediante los distintos métodos se hará con dos factores.
+
+# Ajuste sin rotación
+
+
+```{r}
+fit.pa <- fa(vinos[,2:8],
+             nfactors = 2,
+             min.err = 0.001,  
+             max.iter = 50,
+             fm = "pa",
+             rotate = "none")
+print(fit.pa, digits = 4)
+
+a <- fit.pa$loadings[]
+print(a)
+
+fa.diagram(fit.pa)
+
+```
+
+# Metodo de máxima verosimilitud
+```{r}
+fit.ml <- fa(vinos[,2:8],
+             nfactors = 2,
+             min.err = 0.001,  
+             max.iter = 50,
+             fm = "pa",
+             rotate = "none")
+print(fit.ml, digits = 4)
+
+a_ml <- fit.ml$loadings[]
+print(a_ml)
+
+
+```
+
+
+# Varimax (Rotación ortogonal)
+```{r}
+fit.v <- fa(vinos[,2:8], nfactors=2, fm="pa", rotate="varimax")
+
+print(fit.v, digits = 4)
+
+fa.diagram(fit.v, cut = 0)
+
+```
+
+
+# Promax (Rotación oblícua)
+
+```{r}
+
+fit.pro <- fa(vinos[,2:8], nfactors=2, fm="pa", rotate="Promax")
+
+print(fit.pro)
+
+fa.diagram(fit.pro)
+```
+
+
+# Puntuaciones
+
+### Estas son las muestras de los factores que hemos escogido durante le análisis factorial para reducir al dimensionalidad.
+
+```{r}
+factor.scores(vinos[,2:8],fit.pa, method = 'Bartlett')
+
+```
+
+```{r}
+datos_s <- scale(vinos[,2:8])
+
+#unicidad
+datos_s[1]+1.967535
+```
+
+# Conclusiones
+
+En cuanto a los análisis factoriales realizados, se observa que la utilización de la rotación de los factores es beneficiosa en comparación con el análisis sin rotación. La rotación VARIMAX y/o PROMAX permiten una mejor interpretación de los factores al reducir la complejidad de los patrones de carga de las variables y facilitar la identificación de las dimensiones subyacentes.
+
+Respecto al uso de las puntuaciones factoriales, se encontró que la inclusión de estas medidas puede ser útil para simplificar el análisis, ya que proporcionan una forma de resumir la información contenida en múltiples variables en una sola medida. Los métodos de Bartlett y/o de regresión son opciones válidas para obtener estas puntuaciones.
+
+En general, los resultados obtenidos sugieren que la combinación de la rotación de los factores junto con la extracción de dos factores puede ser una estrategia efectiva para analizar la estructura subyacente de los datos. Sin embargo, es importante tener en cuenta que los resultados pueden variar dependiendo de la naturaleza de los datos y los objetivos específicos del análisis. 
