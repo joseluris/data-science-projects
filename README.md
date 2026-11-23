@@ -1,6 +1,6 @@
 # Data Science Projects
 
-Colección inicial de proyectos académicos individuales de José Luis Risco Velasco, organizados por tema a partir de sus estudios de Ciencia de Datos.
+Colección de algunos de mis proyectos académicos organizados por tema a partir de mis estudios de Ciencia de Datos.
 
 ## Proyectos
 
